@@ -98,6 +98,8 @@ if [ "$nocrypt" -ne 0 -o "$noverity" -ne 0 ];then
 			sed -i 's;,encryptable=.*;;g' $i
 			sed -i 's;,forceencrypt=.*;;g' $i
 			sed -i 's;,forcefdeorfbe=.*;;g' $i
+		else
+			sed -i 's;forceencrypt=;encryptable=;g' $i
 		fi
 		if [ "$noverity" == 1 ];then
 			sed -i 's;,\{0,1\}verify\(=[^,]*\)\{0,1\};;g' $i
@@ -131,6 +133,7 @@ fi
 sed -i '/flash_recovery/a \    disabled' init.rc
 
 sed -i '/on init/a \    chmod 0755 /sbin' init.rc
+sed -i '/on init/a \    chmod 0755 /sbin' init.aosp.rc
 echo -e 'service su /sbin/su --daemon\n\tclass main' >> init.rc
 if [ -z "$UNSUPPORTED_SELINUX" ];then
 	echo -e '\n\tseclabel u:r:su_daemon:s0\n' >> init.rc
@@ -139,5 +142,6 @@ else
 fi
 echo -e '\n' >> init.rc
 addFile init.rc
+addFile init.aosp.rc
 
 VERSIONED=1
